@@ -52,7 +52,7 @@ module.exports = {
                     ...commonColors,
                     background: "#18191b",
                     foreground: "#0d0d0d",
-                    border: "#23262a",
+                    border: "#2e3238",
                     textLight: "#737373",
                     text: "#fff",
                     textInverted: "#0e062d",

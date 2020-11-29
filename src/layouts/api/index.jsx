@@ -80,7 +80,7 @@ const Api = ({ data }) => {
                 justifyContent="center"
                 width="100%"
                 pt={["20px", "20px", "40px"]}
-                mb="80px"
+                mb="40px"
             >
                 <Box
                     display={["none", "none", "flex"]}
@@ -92,7 +92,7 @@ const Api = ({ data }) => {
                     <SideExplorer />
                 </Box>
                 <Box width={["100%", "100%", "40%"]} px="20px" mb="80px">
-                    <Flex mb="24px" alignItems="center">
+                    <Flex mb="28px" alignItems="center">
                         <Box mr="12px">
                             <StyledMethodTag>
                                 {method.toUpperCase()}
@@ -105,11 +105,11 @@ const Api = ({ data }) => {
                     <Box id="description">
                         <h2>Description</h2>
                     </Box>
-                    <Box mb="40px">{description}</Box>
+                    <Box mb="28px">{description}</Box>
                     <Box id="parameters">
                         <h2>Parameters</h2>
                     </Box>
-                    <Box mb="40px" overflowX="auto">
+                    <Box mb="28px" overflowX="auto">
                         {parameters.length > 0 ? (
                             <table>
                                 <thead>
@@ -179,7 +179,7 @@ const Api = ({ data }) => {
                             </code>
                         </pre>
                     </Box>
-                    <Box mb="40px" overflowX="auto">
+                    <Box mb="28px" overflowX="auto">
                         <table>
                             <thead>
                                 <tr>
@@ -230,7 +230,7 @@ const Api = ({ data }) => {
                                 <h3>{model.modelName}</h3>
                             </Box>
                             <Box mb="16px">{model.description}</Box>
-                            <Box mb="40px" overflowX="auto">
+                            <Box mb="28px" overflowX="auto">
                                 <table>
                                     <thead>
                                         <tr>

@@ -20,6 +20,12 @@ export const GlobalStyle = createGlobalStyle`
 
     table {
         overflow: auto;
+        td {
+            border-bottom: solid 1px ${({ theme }) => theme.border};
+        }
+        th {
+            border-bottom: solid 1px ${({ theme }) => theme.border};
+        }
     }
 
     code[class*="language-"],
