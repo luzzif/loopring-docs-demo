@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-export const GlobalStyle = createGlobalStyle`    
+export const GlobalStyle = createGlobalStyle` 
     a.anchor {
         margin-right: 8px;
         path {
