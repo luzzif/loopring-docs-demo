@@ -1,22 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-export const GlobalStyle = createGlobalStyle`
-    @font-face {
-        font-family: "Montserrat";
-        src: url("../../fonts/Montserrat-Medium.ttf");
-        font-weight: 500;
-    }
-    
-    @font-face {
-        font-family: "Montserrat";
-        src: url("../../fonts/Montserrat-Bold.ttf");
-        font-weight: 700;
-    }
-
-    html {
-        overflow: hidden;
-    }
-    
+export const GlobalStyle = createGlobalStyle`    
     a.anchor {
         margin-right: 8px;
         path {
