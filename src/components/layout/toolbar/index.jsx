@@ -7,6 +7,7 @@ import {
     ThemeSetting,
 } from "gatsby-styled-components-dark-mode";
 import { faBars, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { Divider } from "./styled";
 
 export const Toolbar = () => {
     const { logoImage } = useStaticQuery(graphql`
@@ -43,20 +44,28 @@ export const Toolbar = () => {
                 onClose={handleMobileMenuClose}
             />
             <Container alignItems="center" justifyContent="space-between">
-                <Flex alignItems="center">
+                <Flex
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    width={["auto", "auto", "24vw"]}
+                    pl={["32px", "32px", "0"]}
+                >
                     <Box display={["flex", "flex", "none"]} mr="24px">
                         <StyledIcon
                             icon={faBars}
                             onClick={handleMobileMenuOpen}
                         />
                     </Box>
-                    <Box>
+                    <Box mr="48px">
                         <Link to="/">
                             <Logo
                                 fixed={logoImage.childImageSharp.fixed}
                                 alt="Mini logo"
                             />
                         </Link>
+                    </Box>
+                    <Box display={["none", "none", "flex"]}>
+                        <Divider />
                     </Box>
                 </Flex>
                 <Flex>

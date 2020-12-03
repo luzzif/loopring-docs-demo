@@ -10,9 +10,10 @@ export const Main = styled.main`
     width: 100%;
 `;
 
-export const SpacingBox = styled(Box)`
-    width: 100%;
-    height: 64px;
-    min-height: 64px;
-    content: "";
+export const SideExplorerBox = styled(Box)`
+    border-right: solid 1px ${({ theme }) => theme.border};
+`;
+
+export const ChildrenWrapper = styled.div`
+    padding-bottom: 40px;
 `;

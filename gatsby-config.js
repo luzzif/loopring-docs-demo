@@ -42,7 +42,7 @@ module.exports = {
                     textLight: "#999999",
                     text: "#0e062d",
                     textInverted: "#F1F9D2",
-                    shadow: "rgba(0, 0, 0, 0.4)",
+                    shadow: "rgba(0, 0, 0, 0.1)",
                     placeholder: "#999999",
                     info: "#B3E5FC",
                     danger: "#ffcdd2",

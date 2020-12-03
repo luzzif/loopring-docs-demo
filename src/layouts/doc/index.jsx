@@ -1,10 +1,8 @@
 import React from "react";
 import { Box, Flex } from "reflexbox";
 import { Layout } from "../../components/layout";
-import TableofContents from "../../components/table-of-contents";
-import { PreviousNextFlexContainer, PreviousNextTitle, Title } from "./styled";
+import { PreviousNextFlexContainer, PreviousNextTitle } from "./styled";
 import { graphql, useStaticQuery } from "gatsby";
-import SideExplorer from "../../components/side-explorer";
 
 const Doc = ({ path, children }) => {
     const rawData = useStaticQuery(graphql`
@@ -43,58 +41,38 @@ const Doc = ({ path, children }) => {
     });
 
     return (
-        <Layout>
-            <Flex
-                justifyContent="center"
-                width="100%"
-                pt={["20px", "20px", "40px"]}
-            >
-                <Box
-                    display={["none", "none", "flex"]}
-                    width="20%"
-                    mb="80px"
-                    justifyContent="flex-end"
-                    pr="40px"
+        <Layout headings={node.headings}>
+            <h1>{node.frontmatter.title}</h1>
+            {children}
+            {(previous || next) && (
+                <Flex
+                    justifyContent="space-between"
+                    width="100%"
+                    mt="40px"
+                    flexDirection={["column", "column", "row"]}
                 >
-                    <SideExplorer />
-                </Box>
-                <Box width={["100%", "100%", "40%"]} px="20px" mb="80px">
-                    <Title>{node.frontmatter.title}</Title>
-                    {children}
-                    {(previous || next) && (
-                        <Flex
-                            justifyContent="space-between"
-                            width="100%"
-                            mt="40px"
-                            flexDirection={["column", "column", "row"]}
-                        >
-                            {previous ? (
-                                <PreviousNextFlexContainer
-                                    to={`/${previous.slug}`}
-                                >
-                                    <PreviousNextTitle>
-                                        Previous
-                                    </PreviousNextTitle>
-                                    ← {previous.frontmatter.title}
-                                </PreviousNextFlexContainer>
-                            ) : (
-                                <span />
-                            )}
-                            {next ? (
-                                <PreviousNextFlexContainer to={`/${next.slug}`}>
-                                    <PreviousNextTitle>Next</PreviousNextTitle>
-                                    {next.frontmatter.title} →
-                                </PreviousNextFlexContainer>
-                            ) : (
-                                <span />
-                            )}
-                        </Flex>
+                    {previous ? (
+                        <Box mb="16px">
+                            <PreviousNextFlexContainer to={`/${previous.slug}`}>
+                                <PreviousNextTitle>Previous</PreviousNextTitle>←{" "}
+                                {previous.frontmatter.title}
+                            </PreviousNextFlexContainer>
+                        </Box>
+                    ) : (
+                        <span />
                     )}
-                </Box>
-                <Box display={["none", "none", "flex"]} px="40px" width="20%">
-                    <TableofContents headings={node.headings} />
-                </Box>
-            </Flex>
+                    {next ? (
+                        <Box mb="16px">
+                            <PreviousNextFlexContainer to={`/${next.slug}`}>
+                                <PreviousNextTitle>Next</PreviousNextTitle>
+                                {next.frontmatter.title} →
+                            </PreviousNextFlexContainer>
+                        </Box>
+                    ) : (
+                        <span />
+                    )}
+                </Flex>
+            )}
         </Layout>
     );
 };

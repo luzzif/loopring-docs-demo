@@ -3,34 +3,55 @@ import { graphql, Link, useStaticQuery } from "gatsby";
 import { Box, Flex } from "reflexbox";
 import styled from "styled-components";
 import { useState } from "react";
+import { transparentize } from "polished";
 
 const Root = styled(Flex)`
     background-color: transparent;
     overflow: hidden;
+    max-width: 297px;
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    :hover {
+        ::-webkit-scrollbar {
+            display: block;
+            width: 4px;
+        }
+    }
+    ::-webkit-scrollbar-track {
+        display: none;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: ${({ theme }) => theme.border};
+        border-radius: 2px;
+    }
+`;
+
+const HoverableBox = styled(Box)`
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    background-color: ${({ currentlyActive, theme }) =>
+        currentlyActive ? transparentize(0.8, theme.primary) : "transparent"};
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    :hover {
+        background-color: ${({ theme }) => transparentize(0.8, theme.primary)};
+    }
 `;
 
 const StyledLink = styled(Link)`
     text-decoration: none;
     font-size: 14px;
-    font-weight: ${({ currentlyActive }) => (currentlyActive ? 700 : 500)};
-    color: ${({ theme, currentlyActive }) =>
-        currentlyActive ? theme.textInverted : theme.primary};
-    :hover {
-        text-decoration: underline;
-    }
-`;
-
-const TruncatedBox = styled(Box)`
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    color: ${({ theme }) => theme.text} !important;
 `;
 
 const SectionHeader = styled.h3`
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
-    color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.textLight};
 `;
 
 const SideExplorer = () => {
@@ -86,7 +107,12 @@ const SideExplorer = () => {
     }, [documentationItems]);
 
     return (
-        <Root flexDirection="column">
+        <Root
+            flexDirection="column"
+            overflowY="auto"
+            pr="16px"
+            pt={["0", "0", "40px"]}
+        >
             {Object.entries(groupedDocumentationItems)
                 .sort(([sectionA], [sectionB]) =>
                     sectionA.localeCompare(sectionB)
@@ -95,7 +121,7 @@ const SideExplorer = () => {
                     return (
                         <Flex flexDirection="column" key={section} mb="20px">
                             {section && (
-                                <Box height="24px" px="16px">
+                                <Box px="16px">
                                     <SectionHeader>{section}</SectionHeader>
                                 </Box>
                             )}
@@ -104,44 +130,37 @@ const SideExplorer = () => {
                                     window.location.pathname ===
                                     `/${item.slug}`;
                                 return (
-                                    <TruncatedBox
+                                    <StyledLink
                                         key={item.slug}
-                                        height="24px"
-                                        px="16px"
+                                        to={`/${item.slug}`}
                                     >
-                                        <StyledLink
-                                            to={`/${item.slug}`}
+                                        <HoverableBox
                                             currentlyActive={currentlyActive}
                                         >
-                                            {currentlyActive && ">"}{" "}
                                             {item.title}
-                                        </StyledLink>
-                                    </TruncatedBox>
+                                        </HoverableBox>
+                                    </StyledLink>
                                 );
                             })}
                         </Flex>
                     );
                 })}
             <Flex flexDirection="column" mb="16px">
-                <Box height="24px" px="16px">
+                <Box px="16px">
                     <SectionHeader>APIs</SectionHeader>
                 </Box>
                 {apiItems.edges.map(({ node: item }) => {
                     const currentlyActive =
                         window.location.pathname === `/api/${item.operationId}`;
                     return (
-                        <TruncatedBox
+                        <StyledLink
+                            to={`/api/${item.operationId}`}
                             key={item.operationId}
-                            height="24px"
-                            px="16px"
                         >
-                            <StyledLink
-                                to={`/api/${item.operationId}`}
-                                currentlyActive={currentlyActive}
-                            >
-                                {currentlyActive && ">"} {item.summary}
-                            </StyledLink>
-                        </TruncatedBox>
+                            <HoverableBox currentlyActive={currentlyActive}>
+                                {item.summary}
+                            </HoverableBox>
+                        </StyledLink>
                     );
                 })}
             </Flex>

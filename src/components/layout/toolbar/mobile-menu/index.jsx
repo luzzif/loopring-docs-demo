@@ -6,11 +6,17 @@ import { IconContainer, Root } from "./styled";
 import SideExplorer from "../../../side-explorer";
 
 export const MobileMenu = ({ onClose, ...rest }) => (
-    <Root flexDirection="column" alignItems="center" {...rest}>
+    <Root flexDirection="column" {...rest}>
         <IconContainer>
             <StyledIcon icon={faTimes} onClick={onClose} />
         </IconContainer>
-        <Box width="100%" p="24px" overflowY="auto">
+        <Box
+            width="100%"
+            p="24px"
+            overflowY="auto"
+            display="flex"
+            justifyContent="center"
+        >
             <SideExplorer />
         </Box>
     </Root>

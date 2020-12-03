@@ -15,10 +15,17 @@ export const Price = styled.span`
     font-weight: 700;
 `;
 
-export const Title = styled.h1``;
-
 export const PreviousNextFlexContainer = styled(Link)`
     display: flex;
+    background: ${({ theme }) => theme.foreground};
+    box-shadow: 0 3px 8px 0 ${({ theme }) => theme.shadow};
+    transition: box-shadow 0.2s ease;
+    :active {
+        box-shadow: 0 2px 4px 0 ${({ theme }) => theme.shadow};
+    }
+    :hover:not(:active) {
+        box-shadow: 0 5px 12px 0 ${({ theme }) => theme.shadow};
+    }
     flex-direction: column;
     padding: 12px 16px;
     text-decoration: none;
@@ -31,5 +38,6 @@ export const PreviousNextTitle = styled.span`
     margin-bottom: 8px;
     text-transform: uppercase;
     font-size: 12px;
+    font-weight: 700;
     color: ${({ theme }) => theme.textLight};
 `;
