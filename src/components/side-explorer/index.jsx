@@ -110,7 +110,7 @@ const SideExplorer = () => {
         <Root
             flexDirection="column"
             overflowY="auto"
-            pr="16px"
+            px="16px"
             pt={["0", "0", "40px"]}
         >
             {Object.entries(groupedDocumentationItems)
