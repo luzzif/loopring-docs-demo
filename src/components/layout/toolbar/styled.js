@@ -31,7 +31,7 @@ export const AnimatedMobileMenu = styled(MobileMenu)`
     position: fixed;
     right: 0;
     left: 0;
-    top: ${(props) => (props.open ? "0" : "-100%")};
+    top: ${(props) => (props.open ? "0" : "-120%")};
     transition: top ease 0.3s;
     z-index: 11;
     max-height: 100vh;
