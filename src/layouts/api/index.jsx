@@ -4,7 +4,11 @@ import { useState } from "react";
 import { Box, Flex } from "reflexbox";
 import { Layout } from "../../components/layout";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { flattenModels, propertiesToJsObject } from "../../utils/misc";
+import {
+    flattenModels,
+    isResponseSuccessful,
+    propertiesToJsObject,
+} from "../../utils/misc";
 import { OptionalIcon, RequiredIcon, StyledMethodTag, Title } from "./styled";
 
 export const pageQuery = graphql`
@@ -63,7 +67,7 @@ const Api = ({ data }) => {
         if (responses && responses.length > 0) {
             setModels(
                 responses
-                    .filter((response) => response.code === "0")
+                    .filter(isResponseSuccessful)
                     .map((response) =>
                         flattenModels(response.schema.properties)
                     )[0]
@@ -149,10 +153,10 @@ const Api = ({ data }) => {
                 <h2>Response structure and data models</h2>
             </Box>
             <Box mb="16px">
-                <pre className="language-json">
-                    <code className="language-json">
+                <pre>
+                    <code>
                         {responses
-                            .filter((response) => response.code === "0")
+                            .filter(isResponseSuccessful)
                             .map((successfulResponse) =>
                                 JSON.stringify(
                                     propertiesToJsObject(
@@ -162,7 +166,6 @@ const Api = ({ data }) => {
                                     4
                                 )
                             )}
-                        )
                     </code>
                 </pre>
             </Box>
@@ -177,13 +180,17 @@ const Api = ({ data }) => {
                     </thead>
                     <tbody>
                         {responses
-                            .filter((response) => response.code === "0")
+                            .filter(isResponseSuccessful)
                             .reduce((accumulator, successfulResponse) => {
-                                successfulResponse.schema.properties.forEach(
-                                    (property) => {
-                                        accumulator.push(property);
-                                    }
-                                );
+                                const {
+                                    properties,
+                                } = successfulResponse.schema;
+                                if (!properties) {
+                                    return accumulator;
+                                }
+                                properties.forEach((property) => {
+                                    accumulator.push(property);
+                                });
                                 return accumulator;
                             }, [])
                             .map((property, index) => (

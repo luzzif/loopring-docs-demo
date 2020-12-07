@@ -4,8 +4,11 @@ const TYPE_TO_EXAMPLE_VALUE = Object.freeze({
     array: [],
 });
 
-export const propertiesToJsObject = (properties) =>
-    properties.reduce((accumulator, property) => {
+export const propertiesToJsObject = (properties) => {
+    if (!properties) {
+        return {};
+    }
+    return properties.reduce((accumulator, property) => {
         let propertyExampleValue = TYPE_TO_EXAMPLE_VALUE[property.type];
         if (property.properties) {
             propertyExampleValue = propertiesToJsObject(property.properties);
@@ -26,9 +29,13 @@ export const propertiesToJsObject = (properties) =>
         accumulator[property.name] = propertyExampleValue;
         return accumulator;
     }, {});
+};
 
-export const flattenModels = (properties) =>
-    properties.map((accumulator, property) => {
+export const flattenModels = (properties) => {
+    if (!properties) {
+        return [];
+    }
+    return properties.map((accumulator, property) => {
         // not a model, but rather a primitive type
         if (!property.modelName) {
             return accumulator;
@@ -39,3 +46,9 @@ export const flattenModels = (properties) =>
         accumulator.push(property);
         return accumulator;
     }, []);
+};
+
+export const isResponseSuccessful = (response) => {
+    const code = parseInt(response.code);
+    return code === 0 || (code >= 200 && code < 300);
+};

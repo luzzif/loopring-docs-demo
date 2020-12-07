@@ -31,38 +31,6 @@ exports.createPages = async ({ actions, graphql }) => {
     });
 };
 
-const WHITELISTED_PATHS = [
-    "/api/v2/timestamp",
-    "/api/v2/apiKey",
-    "/api/v2/orderId",
-    "/api/v2/order",
-    "/api/v3/order",
-    "/api/v2/batchOrders",
-    "/api/v2/orders",
-    "/api/v2/orders/byHash",
-    "/api/v2/orders/byClientOrderId",
-    "/api/v2/exchange/markets",
-    "/api/v2/exchange/tokens",
-    "/api/v2/exchange/info",
-    "/api/v2/depth",
-    "/api/v2/ticker",
-    "/api/v2/candlestick",
-    "/api/v2/price",
-    "/api/v2/trade",
-    "/api/v2/allowances",
-    "/api/v2/tokenBalances",
-    "/api/v2/transfer",
-    "/api/v2/account",
-    "/api/v2/user/createInfo",
-    "/api/v2/user/updateInfo",
-    "/api/v2/user/balances",
-    "/api/v2/user/deposits",
-    "/api/v2/user/withdrawals",
-    "/api/v2/user/transfers",
-    "/api/v2/user/trades",
-    "/api/v2/user/feeRates",
-];
-
 const flattenProperties = (object) =>
     Object.entries(object).reduce((accumulator, [key, value]) => {
         let flattenedValue = value;
@@ -112,7 +80,10 @@ exports.sourceNodes = async ({
     );
     const flattenedSpecification = flattenProperties(dereferencedSpecification);
     Object.entries(flattenedSpecification.paths)
-        .filter(([path]) => WHITELISTED_PATHS.indexOf(path) >= 0)
+        .filter(
+            ([path]) =>
+                path.indexOf("/api/v2/") >= 0 || path.indexOf("/api/v3/") >= 0
+        )
         .forEach(([path, specification]) => {
             Object.entries(specification)
                 .map(([method, specification]) => ({
