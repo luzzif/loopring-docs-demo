@@ -77,18 +77,21 @@ This additional signature is generally passed along with the request body, and i
 
 ### Generic signing example
 
-You need to seralized specific fields of an order into an integer array, then calculate the Poseidon hash of the array, and then sign the hash with your EdDSA private key.
+We've seen a high-level explanation on how to perform EdDSA request body signing above, but now we'll see a practical example with some code written in Python.
 
-<NoticeBox mode="info">
-    The rules for serialization of orders, hashing, and signature methods must
-    strictly follow [Loopring's
-    Specification](https://github.com/Loopring/protocols/blob/master/packages/loopring_v3/DESIGN.md).
+In order to start, we first need to transform the request we want to send in an integer array, keeping a very specific order for the signed fields.
+
+<NoticeBox mode="warning">
+    The order in which various attributes are specified in the integer array is **fundamental** for the purpose of signature verification.
+    This example is meant to be generic, but you can find specific information about how integer arrays can be constructed by consulting [Loopring's
+    Specification](https://github.com/Loopring/protocols/blob/master/packages/loopring_v3/DESIGN.md)
 </NoticeBox>
 
-Below we use Python code as a demo:
+We then need to calculate the Poseidon hash of the array, and then sign the hash with the user's EdDSA private key.
+Talk is cheap though, so here's a coded example that shows you how to generally construct a correct EdDSA signature.
 
 ```python
-def sign_int_array(privateKey, serialized, t):
+def sign_serialized_request(private_key, serialized_request, t):
     PoseidonHashParams = poseidon_params(
         SNARK_SCALAR_FIELD,
         t,
@@ -96,42 +99,35 @@ def sign_int_array(privateKey, serialized, t):
         53,
         b'poseidon',
         5,
-        security_target=128
+        security_target = 128
     )
-
-    hash = poseidon(serialized, PoseidonHashParams)
-    signedMessage = PoseidonEdDSA.sign(hash, FQ(int(privateKey)))
+    hash = poseidon(serialized_request, PoseidonHashParams)
+    wrapped_signature = PoseidonEdDSA.sign(hash, FQ(int(private_key)))
     return ({
         "hash": str(hash),
-        "signatureRx": str(signedMessage.sig.R.x),
-        "signatureRy": str(signedMessage.sig.R.y),
-        "signatureS": str(signedMessage.sig.s),
+        "signatureRx": str(wrapped_signature.sig.R.x),
+        "signatureRy": str(wrapped_signature.sig.R.y),
+        "signatureS": str(wrapped_signature.sig.s),
     })
 
-def serialize_order(order):
+def serialize_request(request):
+    # Again, this code is meant to be generic, check out Loopring protocol's
+    # specification in order to know how to serialize requests depending
+    # on their type.
     return [
-        int(order["exchangeId"]),
-        int(order["orderId"]),
-        int(order["accountId"]),
-        int(order["tokenSId"]),
-        int(order["tokenBId"]),
-        int(order["amountS"]),
-        int(order["amountB"]),
-        int(order["allOrNone"]=="true"),
-        int(order["validSince"]),
-        int(order["validUntil"]),
-        int(order["maxFeeBips"]),
-        int(order["buy"]=="true"),
-        int(order["label"])
+        int(request["attribute1"]),
+        int(request["attribute2"])
     ]
 
-def sign_order(privateKey, order):
-	serialized = serialize_order(order)
-	signed = sign_int_array(serialized, 14 /* Pay attention to this t value */)
-    order.update(signed)
+def sign_request(eddsa_private_key, request):
+	serialized_request = serialize_request(request)
+    # The second parameter passed here is the t value. It's paramount that
+    # it conforms to the Loopring protocol in order for the signature to be valid
+	signature = sign_serialized_request(serialized_request, 14)
+    request.update(signaturen)
 ```
 
-<NoticeBox mode="info">
+<NoticeBox mode="warning">
     If you don't use the _ethsnarks_ library to calculate Poseidon hash, please
     pay attention to the values of the Poseidon parameters to ensure that they
     are entirely consistent with those used by Loopring. Otherwise, signature
