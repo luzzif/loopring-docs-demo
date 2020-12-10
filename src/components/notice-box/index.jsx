@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Flex } from "reflexbox";
 import styled from "styled-components";
+import ReactMarkdown from "react-markdown";
 
 const Root = styled(Flex)`
     padding: 16px;
@@ -32,7 +33,9 @@ export const NoticeBox = ({ mode, children }) => {
             <Box>
                 <ModeTitle>{mode}</ModeTitle>
             </Box>
-            <Box>{children}</Box>
+            <Box>
+                <ReactMarkdown>{children}</ReactMarkdown>
+            </Box>
         </Root>
     );
 };
