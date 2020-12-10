@@ -11,7 +11,9 @@ Explore the sidebar to find more specific documentation covering other aspects o
 
 ## Developer links
 
-The bst resource through which to start exploring some Loopring goodness is without any doubts the [awesome-loopring](https://github.com/Loopring/awesome-loopring) repository, which is a curated and mantained list of resources related to Loopring.
+All the protocol development generally happens on the `protocols` [repository](https://github.com/Loopring/protocols).
+
+More examples of projects built on the Loopring ecosystem are listed on the `awesome-loopring` [repository](https://github.com/Loopring/awesome-loopring), which is officially mantained and kept up to date by Loopring itself.
 
 ### Developer community
 
