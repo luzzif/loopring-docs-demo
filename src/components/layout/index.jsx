@@ -37,12 +37,15 @@ export const Layout = ({ children, headings }) => (
                             pt="40px"
                         >
                             <Box
-                                width={["100%", "100%", "76%"]}
-                                px={["20px", "28px", "88px"]}
+                                width={["100%", "100%", "100%", "76%"]}
+                                px={["20px", "28px", "40px", "88px"]}
                             >
                                 <ChildrenWrapper>{children}</ChildrenWrapper>
                             </Box>
-                            <Box display={["none", "none", "flex"]} width="24%">
+                            <Box
+                                display={["none", "none", "none", "flex"]}
+                                width="24%"
+                            >
                                 <TableofContents headings={headings} />
                             </Box>
                         </Flex>
