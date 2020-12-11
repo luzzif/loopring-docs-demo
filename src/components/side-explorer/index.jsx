@@ -10,13 +10,8 @@ const Root = styled(Flex)`
     overflow: hidden;
     max-width: 297px;
     ::-webkit-scrollbar {
-        display: none;
-    }
-    :hover {
-        ::-webkit-scrollbar {
-            display: block;
-            width: 4px;
-        }
+        display: block;
+        width: 4px;
     }
     ::-webkit-scrollbar-track {
         display: none;
@@ -29,7 +24,7 @@ const Root = styled(Flex)`
 
 const HoverableBox = styled(Box)`
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 8px 14px;
     cursor: pointer;
     background-color: ${({ currentlyActive, theme }) =>
         currentlyActive ? transparentize(0.8, theme.primary) : "transparent"};
@@ -52,13 +47,17 @@ const SectionHeader = styled.h3`
     font-size: 12px;
     font-weight: 700;
     color: ${({ theme }) => theme.textLight};
+    margin-bottom: 8px;
 `;
 
 const SideExplorer = () => {
     const { documentationItems, apiItems } = useStaticQuery(graphql`
         query {
             documentationItems: allMdx(
-                sort: { order: ASC, fields: frontmatter___section }
+                sort: {
+                    order: ASC
+                    fields: [frontmatter___section, frontmatter___ordering]
+                }
             ) {
                 edges {
                     node {
@@ -66,6 +65,7 @@ const SideExplorer = () => {
                         frontmatter {
                             title
                             section
+                            ordering
                         }
                     }
                 }
@@ -91,18 +91,26 @@ const SideExplorer = () => {
             documentationItems.edges &&
             documentationItems.edges.length > 0
         ) {
-            setGroupedDocumentationItems(
-                documentationItems.edges.reduce((accumulator, edge) => {
+            const sectionizedItems = documentationItems.edges.reduce(
+                (accumulator, edge) => {
                     const { slug, frontmatter } = edge.node;
-                    const { title, section } = frontmatter;
+                    const { title, section, ordering } = frontmatter;
                     if (accumulator[section]) {
-                        accumulator[section].push({ slug, title });
+                        accumulator[section].push({ slug, title, ordering });
                     } else {
-                        accumulator[section] = [{ slug, title }];
+                        accumulator[section] = [{ slug, title, ordering }];
                     }
                     return accumulator;
-                }, {})
+                },
+                {}
             );
+            // ordering section items
+            Object.keys(sectionizedItems).forEach((sectionName) => {
+                sectionizedItems[sectionName].sort(
+                    (a, b) => a.ordering - b.ordering
+                );
+            });
+            setGroupedDocumentationItems(sectionizedItems);
         }
     }, [documentationItems]);
 
