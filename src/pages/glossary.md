@@ -1,6 +1,7 @@
 ---
 title: "Glossary"
-section: "About"
+section: "Fundamentals"
+ordering: 1
 ---
 
 The following terms will be used extensively throughout the documentation. Please make sure you are familiar with them before continuing.

@@ -1,6 +1,7 @@
 ---
 title: "Orders"
 section: "Fundamentals"
+ordering: 4
 ---
 
 import { NoticeBox } from "../components/notice-box";

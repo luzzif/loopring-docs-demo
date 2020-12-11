@@ -7,7 +7,12 @@ import { graphql, useStaticQuery } from "gatsby";
 const Doc = ({ path, children }) => {
     const rawData = useStaticQuery(graphql`
         {
-            allMdx(sort: { order: ASC, fields: frontmatter___section }) {
+            allMdx(
+                sort: {
+                    order: ASC
+                    fields: [frontmatter___section, frontmatter___ordering]
+                }
+            ) {
                 edges {
                     node {
                         headings {

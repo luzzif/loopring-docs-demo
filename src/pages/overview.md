@@ -1,9 +1,8 @@
 ---
-title: "Protocol overview and implementations"
-section: "About"
+title: "Overview"
+section: "Fundamentals"
+ordering: 2
 ---
-
-## Protocol & exchange
 
 **Loopring** is the first scalable DEX protocol built using zkRollup technology and Ethereum as a data availability layer. Using Loopring, people can build a high-performance, orderbook-based, decentralized and **noncustodial** exchange. Due to the use of zkRollup, a layer-2 scalability solution, Loopring is capable of settling more than 2,000 trades per second on Ethereum 1.0. If you would like to learn more about Loopring's design and technical details, please check out Loopring's official website by clicking [here](https://loopring.org).
 

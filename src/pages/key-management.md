@@ -1,6 +1,7 @@
 ---
 title: "Key management"
 section: "Fundamentals"
+ordering: 3
 ---
 
 import { NoticeBox } from "../components/notice-box";
