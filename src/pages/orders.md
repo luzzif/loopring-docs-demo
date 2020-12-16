@@ -8,12 +8,13 @@ import { NoticeBox } from "../components/notice-box";
 
 ## Uni-Directional Order Model
 
-Unlike the order models of most centralized exchanges, Loopring uses the **Uni-Directional Order Model** (UDOM). UDOM represents buy orders and sell orders uniformly with one single data structure. Let's start with a simplified UDOM model to give you a few examples of Loopring's limit price orders (Loopring doesn't support market price orders).
+Unlike the order model of most CEXes, Loopring uses the **Uni-Directional Order Model** (UDOM). UDOM represents buy orders and sell orders uniformly through one single data structure. Let's start with a simplified UDOM model to give you a few examples of Loopring's limit price orders.
 
-In the LRC-ETH trading pair, a **sell** order that sells 500 LRC at the price of 0.03ETH/LRC can be expressed as:
+In the `LRC-ETH` trading pair, a **sell** order that sells 500 LRC at the price of 0.03ETH/LRC can be expressed as:
 
 ```JSON
-{   // LRC-ETH: sell 500 LRC at 0.03ETH/LRC
+{
+    // LRC-ETH: sell 500 LRC at 0.03ETH/LRC
     "tokenS": "LRC",
     "tokenB": "ETH",
     "amountS": 500,
@@ -21,14 +22,11 @@ In the LRC-ETH trading pair, a **sell** order that sells 500 LRC at the price of
 }
 ```
 
-<NoticeBox mode="info">
-    The letter S stands for _Sell_ and letter B stands for _Buy_.
-</NoticeBox>
-
 A **buy** order that buys 500 LRC at the price of 0.03ETH/LRC can be expressed as:
 
 ```JSON
-{   // LRC-ETH: buy 500 LRC at 0.03ETH/LRC
+{
+    // LRC-ETH: buy 500 LRC at 0.03ETH/LRC
     "tokenS": "ETH",
     "tokenB": "LRC",
     "amountS": 15, // = 500 * 0.03
@@ -36,22 +34,28 @@ A **buy** order that buys 500 LRC at the price of 0.03ETH/LRC can be expressed a
 }
 ```
 
+<NoticeBox mode="info">
+    The letter S stands for _sold_ and letter B stands for _bought_.
+</NoticeBox>
+
 As you may have noticed, UDOM does not specify trading pairs or prices explicitly.
 
-However, there is a problem with this simplified model: the match-engine doesn't know when an order should be considered as **fully filled**. We need to introduce another parameter called `buy` for this purpose. If `buy == true`, the match-engine shall check the total fill amount of `tokenB` against `amountB` to determine if an order has been fully filled; otherwise, it shall use the total fill amount of `tokenS` against `amountS`. With this new field, the above orders will look like the following:
+However, there is a problem with this simplified model: the match-engine doesn't know when an order should be considered as **fully filled**. We need to introduce another parameter called `buy` for this purpose. If `buy == true`, the match-engine shall check the total fill amount of `tokenB` against `amountB` to determine if an order has been fully filled; otherwise, it will use the total fill amount of `tokenS` against `amountS`. With this new field, the above orders will look like the following:
 
 ```JSON
-{   // LRC-ETH: sell 500 LRC at 0.03ETH/LRC
+{
+    // LRC-ETH: sell 500 LRC at 0.03ETH/LRC
     "tokenS": "LRC",
     "tokenB": "ETH",
     "amountS": 500,
-    "amountB": 15 // = 500 * 0.03,
+    "amountB": 15, // = 500 * 0.03
     "buy": false  // check tokenS's fill amount against amountS
 }
 ```
 
 ```JSON
-{   // LRC-ETH: buy 500 LRC at 0.03ETH/LRC
+{
+    // LRC-ETH: buy 500 LRC at 0.03ETH/LRC
     "tokenS": "ETH",
     "tokenB": "LRC",
     "amountS": 15, // = 500 * 0.03
@@ -60,7 +64,9 @@ However, there is a problem with this simplified model: the match-engine doesn't
 }
 ```
 
-Note: If the above sell order is fully filled, the amount of ETH bought may be larger than 15ETH; and if the buy order is fully filled, the ETH paid may be less than 15ETH, which is the impact of the `buy` parameter on the match engine's behaviors.
+<NoticeBox mode="info">
+    If the above sell order is fully filled, the amount of ETH bought may be larger than 15ETH; and if the buy order is fully filled, the ETH paid may be less than 15ETH, which is the impact of the `buy` parameter on the match engine's behaviors.
+</NoticeBox>
 
 What is the effect of reversing the `buy` value in the two orders above? The sell order for the LRC-ETH trading pair becomes a buy order for the ETH-LRC trading pair, and the buy order for the LRC-ETH trading pair becomes a sell order for the ETH-LRC trading pair. It means one Loopring trading pair, such as LRC-ETH, is equivalent to two trading pairs in many centralized exchanges, i.e., LRC-ETH and ETH-LRC.
 
@@ -68,10 +74,10 @@ Besides its elegancy and simplicity, Loopring's UDOM also makes it possible to i
 
 ## Order object
 
-Loopring's actual order format is a bit more complex. You can use the following JSON to express a limit price order. For details of specific parameters, see [Submit Order](../dex_apis/submitOrder.md).
+Loopring's actual order format is a bit more complex. You can use the following JSON to express a limit price order.
 
 ```JSON
-newOrder = {
+{
     "tokenSId": 2,  // LRC
     "tokenBId": 0,  // ETH
     "amountS": "500000000000000000000",
@@ -101,18 +107,16 @@ Next, we will further explain some of these data fields for you.
 In an actual order, tokens are not expressed by their names or ERC20 addresses, but by their **token ID**, the index at which the tokens have been registered in the Loopring Exchange's smart contract. Note that the same ERC20 token may have different IDs on different exchanges built on top of the same Loopring protocol.
 
 In the above example, we assume that the IDs of LRC and ETH are 2 and 0, respectively.
-You can query token's information using [Token Information Supported by the Exchange](../dex_apis/getTokens.md).
 
-The amounts of tokens are in their smallest unit as strings. Taking LRC as an example, its `decimals` is 18, so 1.0LRC should be expressed as `" 1000000000000000000 "` (1 followed by 18 0s). Each token's `decimals` is coded in its smart contract; the decimals of ETH is 18.
+Amount are expressed in their smallest unit as strings. Taking LRC as an example, its `decimals` is 18, so 1.0LRC should be expressed as `" 1000000000000000000 "` (1 followed by 18 0s). Each token's `decimals` is coded in its smart contract; the decimals of ETH is 18.
 
 <NoticeBox mode="info">
-    The types of `buy` and`allOrNone` in the order are strings rather than
-    boolean.
+    The types of `buy` and `allOrNone` in the order are strings rather than boolean.
 </NoticeBox>
 
 #### Trading Fee
 
-`maxFeeBips = 50` specifies that the **maximum trading fee** the order is willing to pay to the exchange is 0.5% (the unit of `maxFeeBips` is 0.01%). Loopring charges trading fees in `tokenB` as a percentage of the token bought from a trade. Assuming that the order above has bought `"10000000000000000000"` ETH (10ETH), the actual trading fee **will not exceed 0.05ETH** (`"10000000000000000000"* 0.5%`).
+`maxFeeBips = 50` specifies that the **maximum trading fee** the order is willing to pay to the exchange is 0.5% (`maxFeeBips` is expressed in basis points). Loopring charges trading fees in `tokenB` as a percentage of the token bought from a trade. Assuming that the order above has bought `"10000000000000000000"` ETH (10ETH), the actual trading fee **will not exceed 0.05ETH** (`"10000000000000000000"* 0.5%`).
 
 Loopring's relayer offers different trading fee discounts based on the user VIP tiers. The bottom line is that the actual trading fees can never exceed the maximum orders are willing to pay, specified by `maxFeeBips`.
 
@@ -120,13 +124,12 @@ When you place an order, you must set `maxFeeBips` to be no less than the tradin
 
 #### Timestamps
 
-`validSince` specifies the order's effective timestamp, and`validUntil` specifies the order expiration timestamp, both in seconds since epoch.
+`validSince` specifies the order's effective timestamp, and `validUntil` specifies the order expiration timestamp, both in seconds since epoch.
 
-When the relayer receives an order, it will verify these two timestamps in the order; Loopring's ZKP circuit code will also check these two timestamps during settlement. Due to the delay of zkRollup batch processing, and the possible deviation of the time on Ethereum blockchain and our servers, we strongly recommend that `validSince` be set to the current time,and the window between `validSince` and`validUntil` is no shorter than 1 week; otherwise, your order may be rejected or cancelled by the relayer.
+When the relayer receives an order, it will verify these two timestamps in the order; Loopring's ZKP circuit code will also check these two timestamps during settlement. Due to the delay of zkRollup batch processing, and the possible deviation of the time on Ethereum blockchain and our servers, we strongly recommend that `validSince` be set to the current time, and the window between `validSince` and `validUntil` is no shorter than 1 week; otherwise, your order may be rejected or cancelled by the relayer.
 
 <NoticeBox mode="info">
-    You can take advantage of the `validUntil` timestamp to avoid unnecessary
-    proactive cancellation of orders.
+    You can take advantage of the `validUntil` timestamp to avoid unnecessary proactive cancellation of orders.
 </NoticeBox>
 
 #### Fill Status and Order ID
