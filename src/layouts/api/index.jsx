@@ -45,9 +45,6 @@ export const pageQuery = graphql`
                             type
                             name
                             description
-                            items {
-                                type
-                            }
                         }
                     }
                 }
