@@ -15,6 +15,8 @@ All the protocol development generally happens on the `protocols` [repository](h
 
 More examples of projects built on the Loopring ecosystem are listed on the `awesome-loopring` [repository](https://github.com/Loopring/awesome-loopring), which is officially mantained and kept up to date by Loopring itself.
 
+Another great source of examples is the `hello-loopring` [repository](https://github.com/Loopring/hello_loopring).
+
 ### Developer community
 
 You can join the Looopring developer community on [Discord](https://discord.gg/EzK5UuxU).
