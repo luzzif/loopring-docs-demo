@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const fs = require("fs");
 const $RefParser = require("@apidevtools/json-schema-ref-parser");
 
 exports.createPages = async ({ actions, graphql }) => {
@@ -63,6 +64,23 @@ const populateModelNames = (object) =>
         return accumulator;
     }, {});
 
+const API_BLACKLIST = [
+    "/api/v3/reward",
+    "/api/v3/user/bills",
+    "/api/v3/user/financeIncome",
+    "/api/v3/crawl",
+    "/api/v3/exchange/withdrawalAgents",
+    "/api/v3/refer",
+    "/api/v3/sidecar/liquidityMining",
+    "/api/v3/sidecar/liquidityMiningTotal",
+    "/api/v3/sidecar/liquidityMiningRank",
+    "/api/v3/sidecar/liquidityMiningConf",
+    "/api/v3/sidecar/commissionReward",
+    "/api/v3/sidecar/commissionRewardTotal",
+    "/api/v3/sidecar/commissionRewardRank",
+    "/api/v3/verifyAllEcdsa",
+];
+
 // fetch OpenAPI docs from server and create nodes
 exports.sourceNodes = async ({
     actions,
@@ -70,11 +88,20 @@ exports.sourceNodes = async ({
     createContentDigest,
 }) => {
     const { createNode } = actions;
-    const response = await fetch("http://uat.loopring.io/api");
-    if (!response.ok) {
-        throw new Error("could not fetch Swagger spec");
+    let specification;
+    if (fs.existsSync("./swagger.json")) {
+        console.log("generating docs using local swagger.sjon");
+        specification = JSON.parse(
+            (await fs.readFileSync("./swagger.json")).toString()
+        );
+    } else {
+        console.log("generating docs using remote specification");
+        const response = await fetch("http://uat.loopring.io/api");
+        if (!response.ok) {
+            throw new Error("could not fetch Swagger spec");
+        }
+        specification = await response.json();
     }
-    const specification = await response.json();
     const dereferencedSpecification = await $RefParser.dereference(
         populateModelNames(specification)
     );
@@ -82,7 +109,7 @@ exports.sourceNodes = async ({
     Object.entries(flattenedSpecification.paths)
         .filter(
             ([path]) =>
-                path.indexOf("/api/v2/") >= 0 || path.indexOf("/api/v3/") >= 0
+                path.includes("/api/v3/") && API_BLACKLIST.indexOf(path) < 0
         )
         .forEach(([path, specification]) => {
             Object.entries(specification)
